@@ -1,13 +1,8 @@
 import {createStore, combineReducers} from "redux";
-import expensesReducer from "./Reducer";
+import accountReducer from "./Reducer";
 
-function Store() {
-    const store = createStore(
-        combineReducers({
-            expenses: expensesReducer,
-        })
-    );
-    console.log(store.getState())
-}
+const reducers = combineReducers({
+    account: accountReducer
+});
 
-export default Store;
+export default reducers;
