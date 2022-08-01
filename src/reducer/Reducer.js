@@ -1,6 +1,6 @@
 const Reducer = (state = 0, action) => {
     switch (action.type) {
-        case "DEPOSİT":
+        case "DEPOSIT":
             return state + action.payload;
         case "WITHDRAW":
             return state - action.payload;
