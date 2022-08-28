@@ -2,37 +2,76 @@ package main
 
 import (
 	"strings"
-	"time"
 
 	"example.com/greetings/models"
 	"github.com/google/uuid"
 )
 
 type Service struct {
-	repository *Repository
+	Repository *Repository
 }
 
 func NewService(Repository *Repository) Service {
 	return Service{
-		repository: Repository,
+		Repository: Repository,
 	}
 }
 
-func (service *Service) PostTodos(todosDTO models.TodoDTO) (models.Todo, error) {
+func (service *Service) GetTodos() ([]models.Todo, error) {
 
-	todoCreate := models.Todo{
-		ID:          GenerateUUID(8),
-		Name:        todosDTO.Name,
-		IsCompleted: todosDTO.IsCompleted,
-		CreatedAt:   time.Now().UTC().Round(time.Second),
-		UpdatedAt:   time.Now().UTC().Round(time.Second),
+	todos, err := service.Repository.GetTodos()
+
+	if err != nil {
+		return nil, err
 	}
-	CreateTodo, err := service.repository.PostTodos(todoCreate)
+
+	return todos, nil
+}
+
+func (service *Service) PostTodos(todo models.Todo) error {
+
+	todo.ID = GenerateUUID(8)
+
+	err := service.Repository.PostTodos(todo)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *Service) DeleteTodos(todoId string) error {
+
+	err := service.Repository.DeleteTodos(todoId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *Service) UpdateTodos(todo models.TodoDTO, ID string) (models.Todo, error) {
+
+	updatedTodo, err := service.Repository.UpdateTodos(todo, ID)
 
 	if err != nil {
 		return models.Todo{}, err
 	}
-	return CreateTodo, nil
+
+	return updatedTodo, nil
+}
+
+func (service *Service) GetTodo(ID string) (models.Todo, error) {
+
+	updatedTodo, err := service.Repository.GetTodo(ID)
+
+	if err != nil {
+		return models.Todo{}, err
+	}
+
+	return updatedTodo, nil
 }
 
 func GenerateUUID(length int) string {

@@ -7,7 +7,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 
 function AddTodoPopUp(props) {
-    const {open, handleClose} = props;
+  
+  const {open, handleClose} = props;
 
     return(
         <>
@@ -21,15 +22,15 @@ function AddTodoPopUp(props) {
             autoFocus
             margin="dense"
             id="name"
-            label="Email Address"
-            type="email"
+            label="Name"
+            type="name"
             fullWidth
             variant="standard"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>ADD</Button>
         </DialogActions>
       </Dialog>
       </>

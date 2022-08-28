@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import AddTodoPopUp from './AddTodoPopUp';
 
 
-
 function App() {
   const [open, setOpen] = useState(false);
 

@@ -7,54 +7,28 @@ import (
 	"time"
 
 	"example.com/greetings/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type Repository struct {
 	client *mongo.Client
 }
 
-func (repository *Repository) GetTodo(ID string) (models.Todo, error) {
+func (repository *Repository) CreateTodo(todo models.Todo) error {
 	collection := repository.client.Database("todo").Collection("todo")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	todo := models.Todo{}
-
-	if err := collection.FindOne(ctx, bson.M{"id": ID}).Decode(&todo); err != nil {
-		log.Fatal(err)
-	}
-
-	return todo, nil
-}
-
-func (repository *Repository) PostTodos(todos models.Todo) (models.Todo, error) {
-	collection := repository.client.Database("todo").Collection("todo")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	// burada  insertone ın 3 tane isteği olduğu için options girdim sanırım olmasa da olur farkı var mı
-	_, err := collection.InsertOne(ctx, todos, options.InsertOne())
+	_, err := collection.InsertOne(ctx, todo)
 
 	if err != nil {
-		return models.Todo{}, err
+		return err
 	}
-	createdTodo, _ := repository.GetTodo(todos.ID)
-	fmt.Println(createdTodo, "sdsad")
-	return createdTodo, nil
-}
 
-func GetCleanTestRepository() *Repository {
+	return nil
 
-	repository := NewTestRepository()
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-	todoDB := repository.client.Database("todos")
-	todoDB.Drop(ctx)
-
-	return repository
 }
 
 func NewRepository() *Repository {
@@ -84,4 +58,110 @@ func NewTestRepository() *Repository {
 	}
 
 	return &Repository{client}
+}
+
+func (repository *Repository) GetTodos() ([]models.Todo, error) {
+	collection := repository.client.Database("todo").Collection("todo")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cur, err := collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	todos := []models.Todo{}
+	for cur.Next(ctx) {
+		var todo models.Todo
+		err := cur.Decode(&todo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		//go'da ekleme append ile yapılır
+		todos = append(todos, todo)
+	}
+
+	return todos, nil
+
+}
+
+func (repository *Repository) PostTodos(todo models.Todo) error {
+	collection := repository.client.Database("todo").Collection("todo")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := collection.InsertOne(ctx, todo)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (repository *Repository) DeleteTodos(todoId string) error {
+	collection := repository.client.Database("todo").Collection("todo")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	filter := bson.M{"id": todoId}
+
+	_, err := collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (repository *Repository) UpdateTodos(todo models.TodoDTO, ID string) (models.Todo, error) {
+	collection := repository.client.Database("todo").Collection("todo")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	updateTodo := bson.M{"id": ID,
+		"title": todo.Name,
+	}
+
+	_, err := collection.ReplaceOne(ctx, bson.M{"id": ID}, updateTodo)
+
+	if err != nil {
+		return models.Todo{}, err
+	}
+	updatedTodo, err := repository.GetTodo(ID)
+
+	if err != nil {
+		return models.Todo{}, err
+	}
+
+	return updatedTodo, nil
+
+}
+
+func (repository *Repository) GetTodo(ID string) (models.Todo, error) {
+	collection := repository.client.Database("todo").Collection("todo")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	todo := models.Todo{}
+	if err := collection.FindOne(ctx, bson.M{}).Decode(&todo); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("dsafdfsafd", todo)
+
+	return todo, nil
+
+}
+
+func GetCleanTestRepository() *Repository {
+
+	repository := NewRepository()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	todoDB := repository.client.Database("todo")
+	todoDB.Drop(ctx)
+
+	return repository
 }
