@@ -1,19 +1,22 @@
-import { INSERT_TODO, DELETE_TODO } from "./types"
+import { ADD_TODO, DELETE_TODO } from "./types"
 
-export const insertTodo = (todo) => {
-    return(dispatch) => {
+//const BASE_URL = location.href.indexOf("localhost") > 0 ? "http://localhost:3000" : "";
+
+export const addTodo = (todo) => async (
+    dispatch
+) => {
         dispatch({
-            type: INSERT_TODO,
+            type: ADD_TODO,
             payload: todo
-        })
-    }
+        })  
 }
 
-export const deleteTodo = (id) => {
-    return(dispatch) => {
+export const aTodo = (id) => async (
+    dispatch
+) => {
         dispatch({
             type: DELETE_TODO,
             payload: id
         })
-    }
+    
 }
