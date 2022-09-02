@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import Button from '@mui/material/Button';
 import AddTodoPopUp from './AddTodoPopUp';
+import TodoList from './TodoList';
 
 
 function App() {
@@ -17,9 +18,10 @@ function App() {
       open={open}
       handleClose={handleClose}
       />
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+      <Button variant="contained" color="primary" style={{margin:"5px"}} onClick={() => setOpen(true)}>
         ADD TODO
       </Button>
+      <TodoList/>
     </div>
   );
 }

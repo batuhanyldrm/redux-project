@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import { connect } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -7,15 +8,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { addTodo } from './actions/todoActions';
-import { getTodos } from './api/todoApi';
+import { postTodos } from './api/todoApi';
 
 
 function AddTodoPopUp(props) {
   
   const {open, handleClose, addTodo} = props;
 
+  const [todos, setTodos] = useState("")
+
   const handleCreateTodo = async (todo) => {
-    await getTodos(todo
+    await postTodos(todo
     ).then((res) => {
       addTodo(res)
     })
@@ -30,11 +33,13 @@ function AddTodoPopUp(props) {
             You can add todo
           </DialogContentText>
           <TextField
+            value={todos}
+            onChange={(e) => setTodos(e.target.value)}
             autoFocus
             margin="dense"
-            id="name"
-            label="Name"
-            type="name"
+            id="data"
+            label="Todo"
+            type="text"
             fullWidth
             variant="standard"
           />
