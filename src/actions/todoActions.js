@@ -1,5 +1,5 @@
-import { getTodos } from "../api/todoApi"
-import { ADD_TODO, FETCH_TODO } from "./types"
+import { getTodos, removeTodos } from "../api/todoApi"
+import { ADD_TODO, FETCH_TODO, DELETE_TODO } from "./types"
 
 //const BASE_URL = location.href.indexOf("localhost") > 0 ? "http://localhost:3000" : "";
 
@@ -21,4 +21,14 @@ export const addTodo = (todo) => async (
             type: ADD_TODO,
             payload: todo
         })  
+}
+
+export const deleteTodo = (id) => async (
+    dispatch
+) => {
+    const resp = await removeTodos(id)
+        dispatch({
+            type: DELETE_TODO,
+            payload: resp.id
+        })
 }

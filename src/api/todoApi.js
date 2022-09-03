@@ -10,7 +10,13 @@ const postTodos = async () => {
     return resp;
 }
 
+const removeTodos = async (id) => {
+    const resp = await axios.delete(`http://localhost:3001/todos/${id}`)
+    return resp;
+}
+
 module.exports = {
     getTodos,
-    postTodos
+    postTodos,
+    removeTodos
 }
