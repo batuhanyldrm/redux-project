@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"time"
 
 	"example.com/greetings/models"
 	"github.com/google/uuid"
@@ -28,17 +29,21 @@ func (service *Service) GetTodos() ([]models.Todo, error) {
 	return todos, nil
 }
 
-func (service *Service) PostTodos(todo models.Todo) error {
+func (service *Service) PostTodos(todoDTO models.TodoDTO) *models.Todo {
 
+	todo := models.Todo{}
 	todo.ID = GenerateUUID(8)
+	todo.CreatedAt = time.Now().UTC().Round(time.Second)
+	todo.UpdatedAt = time.Now().UTC().Round(time.Second)
+	todo.IsCompleted = false
+	todo.Name = todoDTO.Name
 
 	err := service.Repository.PostTodos(todo)
-
 	if err != nil {
-		return err
+		return nil
 	}
 
-	return nil
+	return &todo
 }
 
 func (service *Service) DeleteTodos(todoId string) error {
@@ -52,12 +57,17 @@ func (service *Service) DeleteTodos(todoId string) error {
 	return nil
 }
 
-func (service *Service) UpdateTodos(todo models.TodoDTO, ID string) (models.Todo, error) {
+func (service *Service) UpdateTodos(todoDTO models.TodoDTO, ID string) (*models.Todo, error) {
+
+	todo, err := service.Repository.GetTodo(ID)
+
+	todo.Name = todoDTO.Name
+	todo.UpdatedAt = time.Now().UTC().Round(time.Second)
 
 	updatedTodo, err := service.Repository.UpdateTodos(todo, ID)
 
 	if err != nil {
-		return models.Todo{}, err
+		return nil, err
 	}
 
 	return updatedTodo, nil

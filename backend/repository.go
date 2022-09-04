@@ -116,26 +116,24 @@ func (repository *Repository) DeleteTodos(todoId string) error {
 
 }
 
-func (repository *Repository) UpdateTodos(todo models.TodoDTO, ID string) (models.Todo, error) {
+func (repository *Repository) UpdateTodos(todo models.Todo, ID string) (*models.Todo, error) {
 	collection := repository.client.Database("todo").Collection("todo")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	updateTodo := bson.M{"id": ID,
-		"title": todo.Name,
+
+	result := collection.FindOneAndReplace(ctx, bson.M{"id": ID}, todo)
+
+	if result == nil {
+		return nil, result.Err()
 	}
 
-	_, err := collection.ReplaceOne(ctx, bson.M{"id": ID}, updateTodo)
-
-	if err != nil {
-		return models.Todo{}, err
-	}
 	updatedTodo, err := repository.GetTodo(ID)
 
 	if err != nil {
-		return models.Todo{}, err
+		return nil, err
 	}
 
-	return updatedTodo, nil
+	return &updatedTodo, nil
 
 }
 

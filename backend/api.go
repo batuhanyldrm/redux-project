@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"example.com/greetings/models"
 	"github.com/gofiber/fiber/v2"
 )
@@ -33,15 +35,16 @@ func (api *Api) GetTodosHandler(c *fiber.Ctx) error {
 
 func (api *Api) PostTodosHandler(c *fiber.Ctx) error {
 
-	createTodos := models.Todo{}
+	createTodos := models.TodoDTO{}
 	err := c.BodyParser(&createTodos)
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
 	}
-	err = api.Service.PostTodos(createTodos)
+	todo := api.Service.PostTodos(createTodos)
 
 	switch err {
 	case nil:
+		c.JSON(todo)
 		c.Status(fiber.StatusCreated)
 
 	default:
@@ -70,7 +73,7 @@ func (api *Api) UpdateTodosHandler(c *fiber.Ctx) error {
 	ID := c.Params("id")
 	todo := models.TodoDTO{}
 	err := c.BodyParser(&todo)
-
+	fmt.Println(todo, "aaaaasassassa")
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
 	}

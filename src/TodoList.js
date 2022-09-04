@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,18 +9,34 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { fetchTodos, deleteTodo } from './actions/todoActions';
+import EditIcon from '@mui/icons-material/Edit';
+import { fetchTodos, deleteTodo} from './actions/todoActions';
+import EditTodoPopUp from './EditTodoPopUp';
 
 function TodoList(props) {
-    const {fetchTodos, id, todos, deleteTodo} = props;
+    const {fetchTodos, todos, deleteTodo} = props;
+
+    const [changeTodoPopUp, setChangeTodoPopUp] = useState(false)
+    const handleChangeTodoPopUpClose = () => setChangeTodoPopUp(false)
+    const [id, setId] = useState("")
+
+    const handleEdit = (todoID) => {
+      setId(todoID);
+      setChangeTodoPopUp(true);
+    }
 
     useEffect(() => {
-      fetchTodos(id)
+      fetchTodos()
     }, [])
     
 
     return(
         <div>
+          <EditTodoPopUp
+            openn={changeTodoPopUp}
+            handleClosee={handleChangeTodoPopUpClose}
+            id={id}
+          />
             <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -29,6 +45,7 @@ function TodoList(props) {
             <TableCell align="right">Is Completed</TableCell>
             <TableCell align="right">Created At</TableCell>
             <TableCell align="right">Updated At</TableCell>
+            <TableCell align="right">Edit</TableCell>
             <TableCell align="right">Delete</TableCell>
           </TableRow>
         </TableHead>
@@ -45,6 +62,13 @@ function TodoList(props) {
               <TableCell align="right">{item.isCompleted}</TableCell>
               <TableCell align="right">{item.createdAt}</TableCell>
               <TableCell align="right">{item.updatedAt}</TableCell>
+              <TableCell align="right">
+                <IconButton
+                  onClick={() => handleEdit(item.id)}
+                >
+                  <EditIcon size="small"/>
+                </IconButton>
+              </TableCell>
               <TableCell align="right">
                 <IconButton
                   onClick={() => deleteTodo(item.id)}
@@ -67,8 +91,8 @@ const mapStateToProps = (state) => ({
   });
   
   const mapDispatchToProps = (dispatch) => ({
-    fetchTodos: (id) => {
-      dispatch(fetchTodos( id));
+    fetchTodos: () => {
+      dispatch(fetchTodos());
     },
     deleteTodo: (id) => {
       dispatch(deleteTodo( id));

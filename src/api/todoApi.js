@@ -5,8 +5,8 @@ const getTodos = async () => {
     return resp;
 }
 
-const postTodos = async () => {
-    const resp = await axios.post("http://localhost:3001/todos")
+const postTodos = async (data) => {
+    const resp = await axios.post("http://localhost:3001/todos",{name:data})
     return resp;
 }
 
@@ -15,8 +15,14 @@ const removeTodos = async (id) => {
     return resp;
 }
 
+const updateTodos = async (id, data) => {
+    const resp = await axios.put(`http://localhost:3001/todos/${id}`,{name:data})
+    return resp;
+}
+
 module.exports = {
     getTodos,
     postTodos,
-    removeTodos
+    removeTodos,
+    updateTodos
 }

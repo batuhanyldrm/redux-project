@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -7,34 +7,44 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
-import { addTodo } from './actions/todoActions';
-import { postTodos } from './api/todoApi';
-
+import { updateTodo } from './actions/todoActions';
+import { updateTodos } from './api/todoApi';
+/* import TodoList from './TodoList'; */
 
 function AddTodoPopUp(props) {
   
-  const {open, handleClose, addTodo} = props;
+  const {openn, handleClosee, todos, updateTodo, id} = props;
 
-  const [todos, setTodos] = useState("")
+  const [data, setData] = useState({name:  ""})
 
-  const handleCreateTodo = async (data) => {
-    await postTodos(data
-    ).then((res) => {
-      addTodo(res.data)
+
+  const handleChangeTodo = async () => {
+    await updateTodos(id, data)
+    .then(() => {
+        updateTodo(data)
     })
   }
 
+  useEffect(() => {
+    setData({name: todos.name})
+
+  }, [todos])
+  
+
     return(
         <>
-        <Dialog open={open} onClose={handleClose}>
+        {/* <TodoList
+            handleChangeTodo={handleChangeTodo}
+        /> */}
+        <Dialog open={openn} onClose={handleClosee}>
         <DialogTitle>Add Todo</DialogTitle>
         <DialogContent>
           <DialogContentText>
             You can add todo
           </DialogContentText>
           <TextField
-            value={todos}
-            onChange={(e) => setTodos(e.target.value)}
+            value={data.name}
+            onChange={(e) => setData({name: e.target.value})}
             autoFocus
             margin="dense"
             id="data"
@@ -45,8 +55,8 @@ function AddTodoPopUp(props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={() =>handleCreateTodo(todos)}>ADD</Button>
+          <Button onClick={handleClosee}>Cancel</Button>
+          <Button onClick={() => handleChangeTodo()}>UPDATE</Button>
         </DialogActions>
       </Dialog>
       </>
@@ -54,10 +64,13 @@ function AddTodoPopUp(props) {
 }
 
 const mapStateToProps = (state) => ({
+    todos: state.todos
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addTodo: (data) => {dispatch(addTodo(data));},
+  updateTodo: (id,data) => {
+    dispatch(updateTodo(id,data));
+  },
   });
 
 export default connect(mapStateToProps, mapDispatchToProps) (AddTodoPopUp);
