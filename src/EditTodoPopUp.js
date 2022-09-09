@@ -15,7 +15,7 @@ function AddTodoPopUp(props) {
   
   const {openn, handleClosee, todos, updateTodo, id} = props;
 
-  const [data, setData] = useState({name:  ""})
+  const [data, setData] = useState(todos.name)
 
 
   const handleChangeTodo = async () => {
@@ -25,10 +25,10 @@ function AddTodoPopUp(props) {
     })
   }
 
-  useEffect(() => {
+ /*  useEffect(() => {
     setData({name: todos.name})
 
-  }, [todos])
+  }, [todos]) */
   
 
     return(
@@ -43,8 +43,8 @@ function AddTodoPopUp(props) {
             You can add todo
           </DialogContentText>
           <TextField
-            value={data.name}
-            onChange={(e) => setData({name: e.target.value})}
+            value={data}
+            onChange={(e) => setData(e.target.value)}
             autoFocus
             margin="dense"
             id="data"

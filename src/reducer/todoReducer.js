@@ -3,7 +3,6 @@ import { ADD_TODO, DELETE_TODO, FETCH_TODO, UPDATE_TODO } from "../actions/types
 const Reducer = (state = {}, action) => {
     switch (action.type) {
         case ADD_TODO:
-            console.log(action.payload)
             return {...state, allTodos: [...state.allTodos, action.payload]}
         case FETCH_TODO:
             return {...state, allTodos: action.payload}
@@ -12,12 +11,11 @@ const Reducer = (state = {}, action) => {
         case UPDATE_TODO:
             const editTodos = {...state};
             editTodos.allTodos.map((item, index) => {
-                if(action.payload.id === item.id) {
+                if(action.payload.id == item.id) {
                     editTodos.allTodos[index].name = action.payload.name
                 }
-                console.log(action.payload.id)
             })
-            return{...state, allTodos: editTodos.name}
+            return{...state, allTodos: editTodos.allTodos}
         default:
             return state
     }

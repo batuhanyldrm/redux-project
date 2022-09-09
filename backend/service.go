@@ -61,16 +61,20 @@ func (service *Service) UpdateTodos(todoDTO models.TodoDTO, ID string) (*models.
 
 	todo, err := service.Repository.GetTodo(ID)
 
+	if err != nil {
+		return nil, err
+	}
+
 	todo.Name = todoDTO.Name
 	todo.UpdatedAt = time.Now().UTC().Round(time.Second)
 
-	updatedTodo, err := service.Repository.UpdateTodos(todo, ID)
+	err = service.Repository.UpdateTodos(todo, ID)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return updatedTodo, nil
+	return &todo, nil
 }
 
 func (service *Service) GetTodo(ID string) (models.Todo, error) {
