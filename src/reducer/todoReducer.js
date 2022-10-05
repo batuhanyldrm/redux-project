@@ -7,7 +7,7 @@ const Reducer = (state = {}, action) => {
         case FETCH_TODO:
             return {...state, allTodos: action.payload}
         case DELETE_TODO:
-            return {...state, allTodos: [...state.allTodos].filter((item) => item !== action.payload)}
+            return {...state, allTodos: [...state.allTodos].filter((item) => item.id !== action.payload)}
         case UPDATE_TODO:
             const editTodos = {...state};
             editTodos.allTodos.map((item, index) => {

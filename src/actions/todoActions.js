@@ -29,7 +29,7 @@ export const deleteTodo = (id) => async (
     const resp = await removeTodos(id)
         dispatch({
             type: DELETE_TODO,
-            payload: resp.data
+            payload: id
         })
 }
 
