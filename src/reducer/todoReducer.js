@@ -12,7 +12,7 @@ const Reducer = (state = {}, action) => {
             const editTodos = {...state};
             editTodos.allTodos.map((item, index) => {
                 if(action.payload.id == item.id) {
-                    editTodos.allTodos[index].name = action.payload.name
+                    editTodos.allTodos[index].name = action.payload.data
                 }
             })
             return{...state, allTodos: editTodos.allTodos}

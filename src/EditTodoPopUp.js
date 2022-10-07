@@ -9,7 +9,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { updateTodo } from './actions/todoActions';
 import { updateTodos } from './api/todoApi';
-/* import TodoList from './TodoList'; */
 
 function AddTodoPopUp(props) {
   
@@ -17,25 +16,15 @@ function AddTodoPopUp(props) {
 
   const [data, setData] = useState(todos.name)
 
-
   const handleChangeTodo = async () => {
     await updateTodos(id, data)
     .then(() => {
-        updateTodo(data)
+        updateTodo(id,data)
     })
   }
 
- /*  useEffect(() => {
-    setData({name: todos.name})
-
-  }, [todos]) */
-  
-
     return(
         <>
-        {/* <TodoList
-            handleChangeTodo={handleChangeTodo}
-        /> */}
         <Dialog open={openn} onClose={handleClosee}>
         <DialogTitle>Add Todo</DialogTitle>
         <DialogContent>

@@ -33,11 +33,11 @@ export const deleteTodo = (id) => async (
         })
 }
 
-export const updateTodo = (data) => async (
+export const updateTodo = (id,data) => async (
     dispatch
 ) => {
     dispatch({
         type: UPDATE_TODO,
-        payload: data
+        payload: {id,data}
     })
 }

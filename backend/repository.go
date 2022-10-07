@@ -143,7 +143,8 @@ func (repository *Repository) GetTodo(ID string) (models.Todo, error) {
 	defer cancel()
 
 	todo := models.Todo{}
-	if err := collection.FindOne(ctx, bson.M{}).Decode(&todo); err != nil {
+	err := collection.FindOne(ctx, bson.M{}).Decode(&todo); 
+	if err != nil {
 		log.Fatal(err)
 	}
 

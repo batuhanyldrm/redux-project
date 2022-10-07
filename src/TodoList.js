@@ -87,7 +87,6 @@ function TodoList(props) {
 
 const mapStateToProps = (state) => ({
     todos: state.todos
-    //id: state.data.id
   });
   
   const mapDispatchToProps = (dispatch) => ({
